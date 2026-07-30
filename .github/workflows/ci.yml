@@ -1,29 +1,21 @@
-name: RISC-V Build & Test
+name: RISC-V CI
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ main, master ]
 
 jobs:
-  build-and-run:
+  build-and-test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Install RISC-V Toolchain & QEMU
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y gcc-riscv64-linux-gnu qemu-user make
+      - name: Build Docker image
+        run: make docker-build
 
-    - name: Compile RISC-V Programs
-      run: make all
-
-    - name: Run Standalone Assembly
-      run: make run-hello
-
-    - name: Run C/Assembly Interop
-      run: make run-c-interop
+      - name: Run all RISC-V tests
+        run: make all
